@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState } from 'react';
 
 type AuthData = {
     token: string | null;
-    role: string | null;
+    id: string | null;
 };
 
 type AuthContextType = {
@@ -14,7 +14,7 @@ type AuthContextType = {
 };
 
 export const AuthContext = createContext<AuthContextType>({ 
-    authData: { token: null, role: null },
+    authData: { token: null, id: null },
     setAuthData: () => {},
     clearAuthData: () => {},});
 
@@ -22,14 +22,14 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC = ({ children }: any) => {
 
-    const [authData, setAuthDataState] = useState<AuthData>({ token: null, role: null });
+    const [authData, setAuthDataState] = useState<AuthData>({ token: null, id: null });
 
     const setAuthData = (data: AuthData) => {
         setAuthDataState(data);
     };
 
     const clearAuthData = () => {
-        setAuthDataState({ token: null, role: null });
+        setAuthDataState({ token: null, id: null });
     };
 
     const value = { authData, setAuthData, clearAuthData };

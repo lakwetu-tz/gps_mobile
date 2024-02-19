@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/home/HomeScreen';
 import AlertsScreen from '../screens/notification/NotificationsScreen';
 import ProfileScreen from '../screens/account/ProfileScreen';
+import DriverScreen from '../screens/monitor/Driver'
 import MonitorScreen from '../screens/monitor/MonitorScreen';
 import SplashScreen from '../screens/welcome/SplashScreen';
 import PasswordScreen from '../screens/welcome/PasswordScreen';
@@ -61,6 +62,7 @@ export function AppNavigator() {
       {authData.token ? (
         <>
             <Stack.Screen name="MainTab" component={BottomNavigator} options={{ headerShown: false }} />
+            <Tab.Screen name="Driver" component={DriverScreen} options={{ headerShown: false }} /> 
         </>
 
       ) : (

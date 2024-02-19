@@ -29,16 +29,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
     const handleLogin = () => {
         setLoading(true);
-        axios.post('http://192.168.1.111:8000/api/v1/user/login', {
+        axios.post('http://gps-backend.imc.co.tz:8000/api/v1/user/login', {
             phone: phoneNumber,
             password: password
         })
         .then(response => {
             setLoading(false);
-            const { accessToken, role } = response.data;
-            console.log('Server response:', role);
+            const { accessToken, id } = response.data;
+            console.log('Server response:', id);
 
-            setAuthData({ token: accessToken, role });
+            setAuthData({ token: accessToken, id });
         })
         .catch(error => {
             setLoading(false);

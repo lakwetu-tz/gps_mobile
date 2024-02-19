@@ -42,7 +42,7 @@ const SignupScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
             return;
         }
 
-        axios.post('http://192.168.1.111:8000/api/v1/user/register', {
+        axios.post('http://gps-backend.imc.co.tz:8000/api/v1/user/register', {
             phone: phoneNumber,
             username: username,
             password: password,

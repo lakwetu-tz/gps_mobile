@@ -7,22 +7,27 @@ import { Ionicons } from '@expo/vector-icons';
 
 const exploreTabs = [
   { id: '1', name: 'Vehicles', icon: 'car' },
-  { id: '2', name: 'Devices', icon: 'phone' },
+  { id: '2', name: 'Devices', icon: 'location' },
 ];
 
-const ExploreScreen = () => {
+const ExploreScreen = ({ navigation }) => {
   const [vehicles, setVehicles] = useState([]);
   const [device, setDevice] = useState([]);
   const [selectedTab, setSelectedTab] = useState(exploreTabs[0].name);
 
   useEffect(() => {
-    fetchVehicleData();
-  }, []);
+    if (selectedTab == 'Device') {
+      fetchDeviceData();
+    } else {
+      fetchVehicleData();
+    }
+
+  }, [selectedTab]);
 
   const fetchVehicleData = async () => {
     try {
       const response = await axios.get('http://192.168.1.111:8000/api/v1/vehicle/all');
-      setVehicles(response.data);
+      setDevice(response.data);
     } catch (error) {
       console.error('Error fetching vehicle data:', error);
     }
@@ -50,19 +55,25 @@ const ExploreScreen = () => {
     </TouchableOpacity>
   );
 
+
+
   return (
     <View style={styles.container}>
-      <View style={{  backgroundColor: '#fff', borderColor: 'gray', marginTop: 1}}>
-        <View style={{ paddingHorizontal: 24, marginBottom: 24,marginTop: 14, paddingLeft: 10, flexDirection: 'row', alignItems: 'center', gap: 15}}>
-          <View style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 8}}>
-            <Ionicons name='people' size={25} color='white'  />
-          </View>
-            
+      <TouchableOpacity onPress={() => navigation.navigate('Driver')}>
+        <View style={{ backgroundColor: '#fff', borderColor: 'gray', marginTop: 1 }}>
+          <View style={{ paddingHorizontal: 24, marginBottom: 24, marginTop: 14, paddingLeft: 10, flexDirection: 'row', alignItems: 'center', gap: 15 }}>
+            <View style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 8 }}>
+              <Ionicons name='people' size={25} color='white' />
+            </View>
+
             <Text style={{ fontSize: 20, fontWeight: 'bold', }}>Drivers</Text>
+          </View>
+
         </View>
 
-      </View>
-       <View style={styles.tabContainer}>
+      </TouchableOpacity>
+
+      <View style={styles.tabContainer}>
         <FlatList
           data={exploreTabs}
           renderItem={renderTabButton}
@@ -82,7 +93,7 @@ const ExploreScreen = () => {
         />
       ) : (
         <FlatList
-          data={device} 
+          data={device}
           renderItem={({ item }) => (
             <DeviceCard device={item} />)}
           keyExtractor={(item) => item.id}

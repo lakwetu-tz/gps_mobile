@@ -1,40 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import { useAuth } from '../../context/AuthProvider'; // Import the useAuth hook to access the authentication context
 
-interface UserData{
-  user: {
-    username: string,
-    phone: string
-  }
-    
-}
+const ProfileScreen: React.FC = () => {
+    const { authData } = useAuth(); // Access authData from the context
+    const [user, setUser] = useState<any>(null); // State to hold user data
 
-const ProfileScreen: React.FC<UserData> = ({ user }) => {
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`http://gps-backend.imc.co.tz:8000/api/v1/user/get/${authData.id}`); // Use the id from authData
+                setUser(response.data);  
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
 
-  useEffect(async() => {
-      try {
-        const response = await axios.get('http://192.168.1.111:8000/api/v1/user/');
-        setUser(response.data);
-      } catch (error) {
-        console.error('Error fetching vehicle data:', error);
-      }
-    
-  }, [])
+            
+        };
+
+        if (authData.id) {
+            fetchUserData();
+        }
+    }, [authData.id]); 
+
+    const handleLogout = () => {
+        console.warn("log out")
+    }
+
     return (
         <View style={styles.container}>
             {/* Profile Info */}
             <View style={styles.profileInfo}>
                 <Image source={require("../../assets/images/avator.jpeg")} style={styles.profilePic} />
-                <Text style={styles.userName}>{user.username}</Text>
-                <Text style={styles.userEmail}>{user.phone}</Text>
+                {user && (
+                    <>
+                        <Text style={styles.userName}>{user.username}</Text>
+                        <Text style={styles.userEmail}>{user.phone}</Text>
+                    </>
+                )}
             </View>
 
             {/* Options */}
             <View style={styles.options}>
                 {/* Logout */}
-                <TouchableOpacity style={styles.optionItem}>
+                <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
                     <Ionicons name="log-out-outline" size={24} color="#6a737d" />
                     <Text style={styles.optionText}>Logout</Text>
                 </TouchableOpacity>
