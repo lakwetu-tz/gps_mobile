@@ -10,9 +10,9 @@ const notificationsData = [
 ];
 
 const NotificationScreen = () => {
-  const renderNotificationItem = ({ item }) => (
+  const renderNotificationItem = ({ item }: any) => (
     <View style={styles.notificationItem}>
-      <Ionicons name={item.type === 'Issue' ? 'issue-opened' : 'git-pull-request'} size={24} color="#0366d6" />
+      <Ionicons key={item.type === 'Issue' ? 'issue-opened' : 'git-pull-request'} size={24} color="#0366d6" />
       <View style={styles.notificationContent}>
         <Text>{item.message}</Text>
         <Text style={styles.notificationTime}>{item.time}</Text>

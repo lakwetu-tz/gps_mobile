@@ -26,8 +26,8 @@ const ExploreScreen = ({ navigation }) => {
 
   const fetchVehicleData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.111:8000/api/v1/vehicle/all');
-      setDevice(response.data);
+      const response = await axios.get('http://gps-backend.imc.co.tz:8000/api/v1/vehicle/all');
+      setVehicles(response.data);
     } catch (error) {
       console.error('Error fetching vehicle data:', error);
     }
@@ -35,8 +35,8 @@ const ExploreScreen = ({ navigation }) => {
 
   const fetchDeviceData = async () => {
     try {
-      const response = await axios.get('http://192.168.1.111:8000/api/v1/device/all');
-      setVehicles(response.data);
+      const response = await axios.get('http://gps-backend.imc.co.tz:8000/api/v1/device/all');
+      setDevice(response.data);
     } catch (error) {
       console.error('Error fetching vehicle data:', error);
     }

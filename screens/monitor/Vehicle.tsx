@@ -38,9 +38,9 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
 
 
                     {/* Location timeline */}
-                    <View style={[styles.timelineContainer, { borderColor: vehicle.color}]}>
+                    <View style={[styles.timelineContainer, { borderColor: vehicle.color }]}>
                         <View style={styles.timeline}>
-                            
+
                             <Text style={styles.timelineText}>Location: {vehicle.latitude}, {vehicle.longitude}</Text>
                             <Text style={styles.timelineText}>Time: {vehicle.created_at}</Text>
                             <Text style={styles.timelineText}>Speed: {vehicle.speed} Km/h</Text>
@@ -57,7 +57,12 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
 
                 {/* Vehicle summary */}
                 <View style={styles.summaryContainer}>
-                    <Text style={styles.summaryText}>Ignition: {vehicle.ignition ? "ON" : "OFF"}</Text>
+                    <View>
+                        <Text style={styles.summaryText}>
+                            Ignition: {vehicle.ignition === 1 ? "ON" : "OFF"}
+                        </Text>
+                    </View>
+
                     <Text style={styles.summaryText}>Movement: {vehicle.movement ? "ON" : "OFF"}</Text>
                 </View>
             </View>

@@ -100,7 +100,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Signup')}>
-                <Text style={styles.registerButtonText}>{loading ? 'please wait...' : 'Join us'}</Text>
+                <Text style={styles.registerButtonText}>Join us</Text>
             </TouchableOpacity>
         </View>
     );
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     },
     registerButton: {
         width: '100%',
-        backgroundColor: '#8B0000',
+        backgroundColor: 'black',
         paddingVertical: 15,
         borderRadius: 5,
         alignItems: 'center',

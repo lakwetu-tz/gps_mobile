@@ -15,16 +15,15 @@ const SocketContext = createContext<SocketContextType>({
 
 export const useSocket = () => useContext(SocketContext);
 
-const SOCKET_URL = 'http://192.168.100.115:8000/'; // Replace with your WebSocket server URL
+const SOCKET_URL = 'http://localhost:8000/'; 
 
 export const SocketProvider: React.FC = ({ children }: any) => {
     const [socket, setSocket] = useState<WebSocket | null>(null);
 
     useEffect(() => {
-        // Connect to WebSocket when the component mounts
+        
         connect();
 
-        // Disconnect from WebSocket when the component unmounts
         return disconnect;
     }, []);
 

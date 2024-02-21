@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -7,6 +7,8 @@ import { getRegionFromMarkers } from '../../utils/maps/getRegionFromMarker';
 import BottomSheet, { BottomSheetRefProps } from '../../components/BottomSheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Process from '../../components/Process';
+import axios from 'axios';
+import { useSocket } from '../../context/SocketProvider';
 
 export interface MarkerData {
   id: number;
@@ -29,14 +31,9 @@ const renderMarkerTitle = (marker: MarkerData) => (
 
 const HomeScreen = () => {
   const [selectedMarker, setSelectedMarker] = useState<MarkerData | null>(null);
+  const [markers, setMarkers] = useState<MarkerData[]>([]);
 
-  const markers = [
-    { id: 1, latitude: 37.76787, longitude: -122.4077, name: 'T 342 ADC', details: 'ON', battery: '12', speed: "90", trips: "10", ignited: "ON"},
-    { id: 2, latitude: 37.78825, longitude: -122.4324, name: 'T 443 CDA', details: 'Details for Marker 2', battery: '11', speed: "20", trips: "2", ignited: "ON" },
-    { id: 3, latitude: 37.75825, longitude: -122.4824, name: 'M 321 DSA', details: 'Details for Marker 3', battery: '12', speed:"60", trips: "9", ignited: "ON" },
-    { id: 4, latitude: 37.74825, longitude: -122.4024, name: 'T 555 DWR', details: 'Details for Marker 4', battery: '100', speed:"30", trips: "14", ignited: "ON" },
-    // Add more markers as needed
-  ];
+  
 
   const initialRegion = getRegionFromMarkers(markers);
 
