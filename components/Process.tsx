@@ -137,7 +137,7 @@ const Process: React.FC<ProcessProps> = ({ marker }) => {
 
             </View>
 
-            <View style={{ paddingTop: 18, paddingHorizontal: 10 }}><Text>
+            {/* <View style={{ paddingTop: 18, paddingHorizontal: 10 }}><Text>
                 Trip Summary</Text>
                 <View style={{ borderBottomColor: '#eee', marginBottom: 12}}> 
                     <View style={{ flexDirection: 'row', marginBottom: 12 }}>
@@ -158,7 +158,7 @@ const Process: React.FC<ProcessProps> = ({ marker }) => {
                     <Ionicons name='person' />
                     <Text></Text>
                 </View>
-            </View>
+            </View> */}
 
             {/* Content Based on Selected Tab */}
             {activeTab === 'route' && <Route />}

@@ -9,7 +9,6 @@ import SplashScreen from '../screens/welcome/SplashScreen';
 import PasswordScreen from '../screens/welcome/PasswordScreen';
 import OTPScreen from '../screens/welcome/OTPScreen';
 import NewPasswordScreen from '../screens/welcome/NewPasswordScreen';
-import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 
 import { useAuth } from '../context/AuthProvider'
@@ -34,7 +33,7 @@ function BottomNavigator() {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Notifications') {
+          } else if (route.name === 'Alert') {
             iconName = focused ? 'notifications' : 'notifications-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
@@ -43,12 +42,12 @@ function BottomNavigator() {
           }
 
           // You can return any component that you like here!
-          return <Ionicons key={iconName} size={size} color={color} />;
+          return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-      <Tab.Screen name="Notifications" component={AlertsScreen} />
+      <Tab.Screen name="Alert" component={AlertsScreen} />
       <Tab.Screen name="Explore" component={MonitorScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

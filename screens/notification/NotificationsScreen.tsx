@@ -3,22 +3,53 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const notificationsData = [
-  { id: '1', type: 'Issue', message: 'Your pull request was merged', time: '2 hours ago' },
-  { id: '2', type: 'PullRequest', message: 'New issue opened', time: '3 hours ago' },
-  { id: '3', type: 'Issue', message: 'Your comment received a reply', time: '5 hours ago' },
-  { id: '4', type: 'PullRequest', message: 'Your pull request was approved', time: '10 hours ago' },
+  { id: '1', type: 'Overspeeding', message: 'Vehicle exceeded speed limit', time: '2024-02-29T09:30:00' },
+  { id: '2', type: 'Ignition', message: 'Vehicle ignition turned on', time: '2024-02-28T15:20:00' },
+  { id: '3', type: 'Movement', message: 'Vehicle started moving', time: '2024-02-28T10:45:00' },
+  { id: '4', type: 'Network', message: 'Lost connection to the device', time: '2024-02-27T20:15:00' },
 ];
 
 const NotificationScreen = () => {
   const renderNotificationItem = ({ item }: any) => (
     <View style={styles.notificationItem}>
-      <Ionicons key={item.type === 'Issue' ? 'issue-opened' : 'git-pull-request'} size={24} color="#0366d6" />
+      <Ionicons name={getIconName(item.type)} size={24} color="#0366d6" />
       <View style={styles.notificationContent}>
         <Text>{item.message}</Text>
-        <Text style={styles.notificationTime}>{item.time}</Text>
+        <Text style={styles.notificationTime}>{formatTime(item.time)}</Text>
       </View>
     </View>
   );
+
+  const getIconName = (type: string) => {
+    switch (type) {
+      case 'Overspeeding':
+        return 'speedometer';
+      case 'Ignition':
+        return 'power';
+      case 'Movement':
+        return 'car';
+      case 'Network':
+        return 'wifi';
+      default:
+        return 'information-circle';
+    }
+  };
+
+  const formatTime = (time: string) => {
+    // Assume 'time' is in ISO 8601 format (e.g., '2024-02-29T09:30:00')
+    const notificationDate = new Date(time);
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    const notificationDateString =
+      notificationDate.toDateString() === today.toDateString()
+        ? 'Today'
+        : notificationDate.toDateString() === yesterday.toDateString()
+        ? 'Yesterday'
+        : notificationDate.toLocaleDateString();
+    const notificationTimeString = notificationDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${notificationDateString}, ${notificationTimeString}`;
+  };
 
   return (
     <View style={styles.container}>
