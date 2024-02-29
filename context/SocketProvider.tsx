@@ -1,55 +1,26 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext } from 'react';
+import io, { Socket } from 'socket.io-client';
 
-// Define types for context value and provider props
-type SocketContextType = {
-    socket: WebSocket | null;
-    connect: () => void;
-    disconnect: () => void;
+interface SocketContextType {
+    socket: Socket;
+}
+
+const SocketContext = createContext<SocketContextType | undefined>(undefined);
+
+export const useSocket = (): SocketContextType => {
+    const context = useContext(SocketContext);
+    if (!context) {
+        throw new Error('useSocket must be used within a SocketProvider');
+    }
+    return context;
 };
 
-const SocketContext = createContext<SocketContextType>({
-    socket: null,
-    connect: () => { },
-    disconnect: () => { },
-});
-
-export const useSocket = () => useContext(SocketContext);
-
-const SOCKET_URL = 'http://localhost:8000/'; 
-
 export const SocketProvider: React.FC = ({ children }: any) => {
-    const [socket, setSocket] = useState<WebSocket | null>(null);
-
-    useEffect(() => {
-        
-        connect();
-
-        return disconnect;
-    }, []);
-
-    const connect = () => {
-        const ws = new WebSocket(SOCKET_URL);
-        ws.onopen = () => {
-            console.log('WebSocket connected');
-            setSocket(ws);
-        };
-        ws.onclose = () => {
-            console.log('WebSocket disconnected');
-            setSocket(null);
-        };
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
-    };
-
-    const disconnect = () => {
-        if (socket) {
-            socket.close();
-        }
-    };
+    const socket = io('http://gps-backend.imc.co.tz:8000');
+    // const socket = io('http://192.168.100.115:3300');
 
     return (
-        <SocketContext.Provider value={{ socket, connect, disconnect }}>
+        <SocketContext.Provider value={{ socket }}>
             {children}
         </SocketContext.Provider>
     );

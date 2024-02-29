@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -23,6 +23,70 @@ interface VehicleCardProps {
 }
 
 const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
+    const [location, setLocation] = useState<string | null>(null);
+
+    let eta = new Date(vehicle.created_at); // Assuming vehicle.eta is the ETA in Date format
+
+    // Add 3 hours to ETA
+    eta.setHours(eta.getHours() + 3);
+
+    // Format the new ETA as a string
+    const formattedEta = eta.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    function bearing(angle: number) {
+        let bearing = '';
+        if (angle >= 0 && angle < 22.5) {
+            bearing = 'Facing North';
+        } else if (angle >= 22.5 && angle < 67.5) {
+            bearing = 'Facing North East';
+        } else if (angle >= 67.5 && angle < 112.5) {
+            bearing = 'Facing East';
+        } else if (angle >= 112.5 && angle < 157.5) {
+            bearing = 'Facing South East';
+        } else if (angle >= 157.5 && angle < 202.5) {
+            bearing = 'Facing South';
+        } else if (angle >= 202.5 && angle < 247.5) {
+            bearing = 'Facing South West';
+        } else if (angle >= 247.5 && angle < 292.5) {
+            bearing = 'Facing West';
+        } else if (angle >= 292.5 && angle < 337.5) {
+            bearing = 'Facing North West';
+        } else if (angle >= 337.5 && angle <= 360) {
+            bearing = 'Facing North';
+        }
+
+        return bearing
+    }
+
+    useEffect(() => {
+        const fetchLocation = async () => {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${parseFloat(vehicle.latitude)}&lon=${parseFloat(vehicle.longitude)}&zoom=18&addressdetails=1`);
+                const data = await response.json();
+                const { address } = data;
+                // Check if address exists and has city property
+                if (address && address.city) {
+
+                    const location = address.road || address.suburb || address.ward;
+
+                    const city = address.ward || address.town || address.village || address.hamlet || address.county || address.state;
+                    const country = address.country;
+
+
+                    const locationString = city ? `${location}, ${city}` : country;
+                    setLocation(locationString);
+                } else {
+                    // Handle the case where city is not available
+                    setLocation(address.country || 'Location not available');
+                }
+            } catch (error) {
+                console.error('Error fetching location:', error);
+                setLocation(null);
+            }
+        };
+        fetchLocation();
+    }, [vehicle]);
+
     return (
         <View style={styles.card}>
 
@@ -41,11 +105,26 @@ const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
                     <View style={[styles.timelineContainer, { borderColor: vehicle.color }]}>
                         <View style={styles.timeline}>
 
-                            <Text style={styles.timelineText}>Location: {vehicle.latitude}, {vehicle.longitude}</Text>
-                            <Text style={styles.timelineText}>Time: {vehicle.created_at}</Text>
-                            <Text style={styles.timelineText}>Speed: {vehicle.speed} Km/h</Text>
-                            <Text style={styles.timelineText}>Angle: {vehicle.angle} C</Text>
-                            <Text style={styles.timelineText}>Altitude: {vehicle.altitude} ft</Text>
+                            <View style={styles.iconRow}>
+                                <Ionicons name="location-outline" size={20} color="#6a737d" />
+                                <Text style={styles.timelineText}> {location}</Text>
+                            </View>
+                            <View style={styles.iconRow}>
+                                <Ionicons name="time-outline" size={20} color="#6a737d" />
+                                <Text style={styles.timelineText}> {formattedEta}</Text>
+                            </View>
+                            <View style={styles.iconRow}>
+                                <Ionicons name="speedometer-outline" size={20} color="#6a737d" />
+                                <Text style={styles.timelineText}> {vehicle.speed} Km/h</Text>
+                            </View>
+                            <View style={styles.iconRow}>
+                                <Ionicons name="compass-outline" size={20} color="#6a737d" />
+                                <Text style={styles.timelineText}> {bearing(parseFloat(vehicle.angle))}</Text>
+                            </View>
+                            <View style={styles.iconRow}>
+                                <Ionicons name="navigate-outline" size={20} color="#6a737d" />
+                                <Text style={styles.timelineText}> {vehicle.altitude} ft</Text>
+                            </View>
                         </View>
                     </View>
 
@@ -100,6 +179,11 @@ const styles = StyleSheet.create({
     },
     description: {
         color: '#6a737d',
+        backgroundColor: 'yellow',
+        paddingVertical: 12,
+        paddingHorizontal: 8,
+        borderColor: 'black',
+        shadowColor: 'gray'
     },
     contentSection: {
         flexDirection: 'row',
@@ -113,7 +197,7 @@ const styles = StyleSheet.create({
     timelineContainer: {
         flex: 1,
         borderLeftWidth: 4,
-        paddingLeft: 16,
+        paddingLeft: 12,
     },
     timelinePoint: {
         position: 'absolute',
@@ -140,6 +224,10 @@ const styles = StyleSheet.create({
         color: '#6a737d',
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    iconRow: {
+        flexDirection: 'row',
+        alignItems: 'center'
     },
 });
 

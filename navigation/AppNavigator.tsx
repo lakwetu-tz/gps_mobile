@@ -15,7 +15,7 @@ import React from 'react';
 import { useAuth } from '../context/AuthProvider'
 import LoginScreen from '../screens/welcome/LoginScreen';
 import SignupScreen from '../screens/welcome/SignupScreen';
-import Ionicons from '@expo/vector-icons/build/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

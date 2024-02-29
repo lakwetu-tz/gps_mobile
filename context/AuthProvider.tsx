@@ -26,6 +26,7 @@ export const AuthProvider: React.FC = ({ children }: any) => {
 
     const setAuthData = (data: AuthData) => {
         setAuthDataState(data);
+        
     };
 
     const clearAuthData = () => {
@@ -33,6 +34,7 @@ export const AuthProvider: React.FC = ({ children }: any) => {
     };
 
     const value = { authData, setAuthData, clearAuthData };
+    console.log(authData)
 
     return <AuthContext.Provider value={value}>
         {children}

@@ -5,23 +5,34 @@ import DeviceCard from './Device';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 
-const exploreTabs = [
+interface ExploreScreenProps {
+  navigation: any; // Type for navigation prop
+}
+
+interface Tab {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+const exploreTabs: Tab[] = [
   { id: '1', name: 'Vehicles', icon: 'car' },
   { id: '2', name: 'Devices', icon: 'location' },
 ];
 
-const ExploreScreen = ({ navigation }) => {
-  const [vehicles, setVehicles] = useState([]);
-  const [device, setDevice] = useState([]);
-  const [selectedTab, setSelectedTab] = useState(exploreTabs[0].name);
+const ExploreScreen: React.FC<ExploreScreenProps> = ({ navigation }) => {
+  const [vehicles, setVehicles] = useState<any[]>([]);
+  const [device, setDevice] = useState<any[]>([]);
+  const [selectedTab, setSelectedTab] = useState<string>(exploreTabs[0].name);
+
+  console.log(selectedTab);
 
   useEffect(() => {
-    if (selectedTab == 'Device') {
+    if (selectedTab === 'Devices') {
       fetchDeviceData();
     } else {
       fetchVehicleData();
     }
-
   }, [selectedTab]);
 
   const fetchVehicleData = async () => {
@@ -38,12 +49,11 @@ const ExploreScreen = ({ navigation }) => {
       const response = await axios.get('http://gps-backend.imc.co.tz:8000/api/v1/device/all');
       setDevice(response.data);
     } catch (error) {
-      console.error('Error fetching vehicle data:', error);
+      console.error('Error fetching device data:', error);
     }
   };
 
-
-  const renderTabButton = ({ item }) => (
+  const renderTabButton = ({ item }: { item: Tab }) => (
     <TouchableOpacity
       style={[styles.tabButton, selectedTab === item.name && styles.selectedTabButton]}
       onPress={() => setSelectedTab(item.name)}
@@ -55,8 +65,6 @@ const ExploreScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('Driver')}>
@@ -65,14 +73,10 @@ const ExploreScreen = ({ navigation }) => {
             <View style={{ backgroundColor: '#8B0000', padding: 8, borderRadius: 8 }}>
               <Ionicons name='people' size={25} color='white' />
             </View>
-
             <Text style={{ fontSize: 20, fontWeight: 'bold', }}>Drivers</Text>
           </View>
-
         </View>
-
       </TouchableOpacity>
-
       <View style={styles.tabContainer}>
         <FlatList
           data={exploreTabs}
@@ -83,7 +87,6 @@ const ExploreScreen = ({ navigation }) => {
           contentContainerStyle={styles.tabList}
         />
       </View>
-
       {selectedTab === 'Vehicles' ? (
         <FlatList
           data={vehicles}
@@ -92,13 +95,7 @@ const ExploreScreen = ({ navigation }) => {
           contentContainerStyle={styles.flatListContainer}
         />
       ) : (
-        <FlatList
-          data={device}
-          renderItem={({ item }) => (
-            <DeviceCard device={item} />)}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.flatListContainer}
-        />
+        <DeviceCard />
       )}
     </View>
   );

@@ -8,6 +8,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIc
 type RootStackParamList = {
     Login: undefined;
     Password: undefined;
+    Home: undefined;
     Signup: undefined ;
 };
 
@@ -25,18 +26,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     const usernameInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const verifyPasswordInputRef = useRef<TextInput>(null);
-    const { setAuthData } = useContext(AuthContext); // Access setAuthData from AuthContext
+    const { authData, setAuthData } = useContext(AuthContext); // Access setAuthData from AuthContext
 
     const handleLogin = () => {
         setLoading(true);
-        axios.post('http://gps-backend.imc.co.tz:8000/api/v1/user/login', {
+        axios.post('http://gps-backend.imc.co.tz:8000/api/v1/user/login/user', {
             phone: phoneNumber,
             password: password
         })
         .then(response => {
             setLoading(false);
             const { accessToken, id } = response.data;
-            console.log('Server response:', id);
 
             setAuthData({ token: accessToken, id });
         })

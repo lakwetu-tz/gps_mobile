@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Animated, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Animated, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import axios from 'axios';
 import MaterialCommunityIcons from '@expo/vector-icons/build/MaterialCommunityIcons';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -29,7 +29,7 @@ const SignupScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
     const usernameInputRef = useRef<TextInput>(null);
     const passwordInputRef = useRef<TextInput>(null);
     const verifyPasswordInputRef = useRef<TextInput>(null);
-    
+
 
     const handleRegister = () => {
         if (!phoneNumber || !username || !password || !verifyPassword) {
@@ -42,23 +42,28 @@ const SignupScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
             return;
         }
 
-        axios.post('http://gps-backend.imc.co.tz:8000/api/v1/user/register', {
+        console.log(phoneNumber)
+        console.log(username)
+        console.log(password)
+        console.log(verifyPassword)
+
+        axios.post('http://gps-backend.imc.co.tz:8000/api/v1/user/register/user', {
             phone: phoneNumber,
             username: username,
             password: password,
-            role: "user"
         })
-        .then(response => {
-            if (response.status === 201) {
-                Alert.alert('Success', 'Registration successful.');
-                
-                navigation.navigate('Login')
-            }
-        })
-        .catch(error => {
-            console.error('Registration error:', error);
-            Alert.alert('Error', 'Registration failed. Please try again.');
-        });
+            .then(response => {
+                if (response.status === 200) {
+                    Alert.alert('Success', 'Registration successful.');
+
+                    navigation.navigate('Login')
+                }
+
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                Alert.alert('Error', 'Registration failed. Please try again.');
+            });
 
     };
 
@@ -77,77 +82,80 @@ const SignupScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-        {/* Back button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
-            <MaterialCommunityIcons name="arrow-left" size={24} color="#555" />
-        </TouchableOpacity>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <View style={styles.container}>
+                {/* Back button */}
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
+                    <MaterialCommunityIcons name="arrow-left" size={24} color="#555" />
+                </TouchableOpacity>
 
-        <View style={styles.logoContainer}>
-            <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-        </View>
-        <View style={styles.formContainer}>
-            <Text style={styles.header}>Join Us</Text>
-            <Text style={styles.subHeader}>Signup to Continue</Text>
-            <View style={styles.inputContainer}>
-                {/* <Animated.Text style={[styles.label, { opacity: isFocusedPhoneNumber ? 1 : 0.5 }]}>Phone Number</Animated.Text> */}
-                <TextInput
-                    ref={phoneNumberInputRef}
-                    style={[styles.input, { borderColor: isFocusedPhoneNumber ? '#007bff' : '#ccc' }]}
-                    onChangeText={setPhoneNumber}
-                    placeholder='phone number, e.g +255 xxx xxxx xx'
-                    onFocus={() => handleFocus(phoneNumberInputRef, setIsFocusedPhoneNumber)}
-                    onBlur={() => handleBlur(setIsFocusedPhoneNumber)}
-                    value={phoneNumber}
-                    keyboardType="phone-pad"
-                />
+                <View style={styles.logoContainer}>
+                    <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+                </View>
+                <View style={styles.formContainer}>
+                    <Text style={styles.header}>Join Us</Text>
+                    <Text style={styles.subHeader}>Signup to Continue</Text>
+                    <View style={styles.inputContainer}>
+                        {/* <Animated.Text style={[styles.label, { opacity: isFocusedPhoneNumber ? 1 : 0.5 }]}>Phone Number</Animated.Text> */}
+                        <TextInput
+                            ref={phoneNumberInputRef}
+                            style={[styles.input, { borderColor: isFocusedPhoneNumber ? '#007bff' : '#ccc' }]}
+                            onChangeText={setPhoneNumber}
+                            placeholder='e.g +255 xxx xxxx xx'
+                            onFocus={() => handleFocus(phoneNumberInputRef, setIsFocusedPhoneNumber)}
+                            onBlur={() => handleBlur(setIsFocusedPhoneNumber)}
+                            value={phoneNumber}
+                            keyboardType="phone-pad"
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        {/* <Animated.Text style={[styles.label, { opacity: isFocusedUsername ? 1 : 0.5 }]}>Username</Animated.Text> */}
+                        <TextInput
+                            ref={usernameInputRef}
+                            placeholder='username'
+                            style={[styles.input, { borderColor: isFocusedUsername ? '#007bff' : '#ccc' }]}
+                            onChangeText={setUsername}
+                            onFocus={() => handleFocus(usernameInputRef, setIsFocusedUsername)}
+                            onBlur={() => handleBlur(setIsFocusedUsername)}
+                            value={username}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        {/* <Animated.Text style={[styles.label, { opacity: isFocusedPassword ? 1 : 0.5 }]}>Password</Animated.Text> */}
+                        <TextInput
+                            ref={passwordInputRef}
+                            style={[styles.input, { borderColor: isFocusedPassword ? '#007bff' : '#ccc' }]}
+                            onChangeText={(text) => {
+                                setPassword(text);
+                                handlePasswordChange(text);
+                            }}
+                            placeholder='password'
+                            onFocus={() => handleFocus(passwordInputRef, setIsFocusedPassword)}
+                            onBlur={() => handleBlur(setIsFocusedPassword)}
+                            value={password}
+                            secureTextEntry
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        {/* <Animated.Text style={[styles.label, { opacity: isFocusedVerifyPassword ? 1 : 0.5 }]}>Verify Password</Animated.Text> */}
+                        <TextInput
+                            ref={verifyPasswordInputRef}
+                            style={[styles.input, { borderColor: isFocusedVerifyPassword ? '#007bff' : '#ccc' }]}
+                            onChangeText={setVerifyPassword}
+                            placeholder='Verify Password'
+                            onFocus={() => handleFocus(verifyPasswordInputRef, setIsFocusedVerifyPassword)}
+                            onBlur={() => handleBlur(setIsFocusedVerifyPassword)}
+                            value={verifyPassword}
+                            secureTextEntry
+                        />
+                    </View>
+                    <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                        <Text style={styles.registerButtonText}>Register</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={styles.inputContainer}>
-                {/* <Animated.Text style={[styles.label, { opacity: isFocusedUsername ? 1 : 0.5 }]}>Username</Animated.Text> */}
-                <TextInput
-                    ref={usernameInputRef}
-                    placeholder='username'
-                    style={[styles.input, { borderColor: isFocusedUsername ? '#007bff' : '#ccc' }]}
-                    onChangeText={setUsername}
-                    onFocus={() => handleFocus(usernameInputRef, setIsFocusedUsername)}
-                    onBlur={() => handleBlur(setIsFocusedUsername)}
-                    value={username}
-                />
-            </View>
-            <View style={styles.inputContainer}>
-                {/* <Animated.Text style={[styles.label, { opacity: isFocusedPassword ? 1 : 0.5 }]}>Password</Animated.Text> */}
-                <TextInput
-                    ref={passwordInputRef}
-                    style={[styles.input, { borderColor: isFocusedPassword ? '#007bff' : '#ccc' }]}
-                    onChangeText={(text) => {
-                        setPassword(text);
-                        handlePasswordChange(text);
-                    }}
-                    placeholder='password'
-                    onFocus={() => handleFocus(passwordInputRef, setIsFocusedPassword)}
-                    onBlur={() => handleBlur(setIsFocusedPassword)}
-                    value={password}
-                    secureTextEntry
-                />
-            </View>
-            <View style={styles.inputContainer}>
-                {/* <Animated.Text style={[styles.label, { opacity: isFocusedVerifyPassword ? 1 : 0.5 }]}>Verify Password</Animated.Text> */}
-                <TextInput
-                    ref={verifyPasswordInputRef}
-                    style={[styles.input, { borderColor: isFocusedVerifyPassword ? '#007bff' : '#ccc' }]}
-                    onChangeText={setVerifyPassword}
-                    placeholder='Verify Password'
-                    onFocus={() => handleFocus(verifyPasswordInputRef, setIsFocusedVerifyPassword)}
-                    onBlur={() => handleBlur(setIsFocusedVerifyPassword)}
-                    value={verifyPassword}
-                    secureTextEntry
-                />
-            </View>
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                <Text style={styles.registerButtonText}>Register</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
+        </KeyboardAvoidingView>
+
     );
 };
 
@@ -207,7 +215,7 @@ const styles = StyleSheet.create({
     },
     registerButton: {
         width: '100%',
-        backgroundColor: '#007bff',
+        backgroundColor: '#8B0000',
         paddingVertical: 15,
         borderRadius: 5,
         alignItems: 'center',
