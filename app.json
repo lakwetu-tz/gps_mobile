@@ -1,42 +1,61 @@
 {
   "expo": {
-    "name": "moran",
-    "slug": "network",
+    "name": "gps_android",
+    "slug": "imc",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
-    "userInterfaceStyle": "automatic",
+    "icon": "./assets/logo.png",
+    "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/moran.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#00000"
+      "image": "./assets/moran.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.moran.app",
       "supportsTablet": true,
-      "bundleIdentifier": "com.nabendu82.reactnativegmaps"
+      "infoPlist": {},
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
+      "package": "com.moran.app",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.nabendu82.reactnativegmaps",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyBDndoTWkctW7Gr8GNkli6U0CNEKakiiUE"
+            "apiKey": "AIzaSyCzLm7n7s96NLk-olcnVkAUzDGW2aYT6YQ"
         }
-      }
+    },
+      "permissions": [
+        "ACCESS_NETWORK_STATE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
     "extra": {
       "eas": {
-        "projectId": "e8418bfa-670f-43f5-a014-894dd5dcf400"
+        "projectId": "81161e6a-7f07-4fa2-b5be-2050483a82fc"
       }
-    }
+    },
+    "owner": "enock"
   }
 }
